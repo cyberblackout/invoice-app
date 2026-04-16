@@ -7,6 +7,8 @@ import { supabase } from '@/lib/supabase'
 import { Invoice, LineItem, Payment } from '@/types'
 import { formatGHS, formatDate } from '@/lib/ghana'
 import { initiatePayment, recordPayment } from '@/lib/payments'
+import { formatNewInvoiceWhatsApp, formatPaymentReminder } from '@/lib/notifications'
+import { calculateDaysOverdue } from '@/lib/revenue'
 
 export default function InvoiceDetailPage() {
   const params = useParams()
@@ -96,6 +98,34 @@ export default function InvoiceDetailPage() {
     loadInvoice()
   }
 
+  function handleSendWhatsApp() {
+    if (!invoice || !invoice.client) return
+
+    let message: string
+    if (invoice.status === 'draft') {
+      message = `New invoice for you: ${invoice.invoice_number} - ${formatGHS(invoice.total)}`
+    } else {
+      const daysOverdue = calculateDaysOverdue(invoice.due_date)
+      if (daysOverdue > 0) {
+        message = formatPaymentReminder(invoice, daysOverdue)
+      } else {
+        message = formatNewInvoiceWhatsApp(invoice)
+      }
+    }
+
+    const phone = invoice.client.phone?.replace(/[^0-9]/g, '') || ''
+    const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
+    window.open(whatsappUrl, '_blank')
+  }
+
+  function handleShareInvoice() {
+    if (!invoice || !invoice.client) return
+    const message = formatNewInvoiceWhatsApp(invoice)
+    const phone = invoice.client.phone?.replace(/[^0-9]/g, '') || ''
+    const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
+    window.open(whatsappUrl, '_blank')
+  }
+
   const getStatusBadge = (status: string) => {
     const classes: Record<string, string> = {
       draft: 'badge-draft',
@@ -145,13 +175,27 @@ export default function InvoiceDetailPage() {
           <Link href="/invoices" className="btn btn-ghost btn-sm" style={{ marginBottom: '8px' }}>← Back to Invoices</Link>
           <h1 className="page-title">{invoice.invoice_number}</h1>
         </div>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
           <span className={`badge ${getStatusBadge(invoice.status)}`} style={{ fontSize: '14px', padding: '8px 16px' }}>
             {invoice.status}
           </span>
+          {invoice.client?.phone && (
+            <button
+              className="btn btn-secondary"
+              onClick={handleSendWhatsApp}
+              style={{ background: '#25D366', color: 'white', border: 'none' }}
+            >
+              📱 WhatsApp
+            </button>
+          )}
+          {invoice.status === 'sent' && (
+            <button className="btn btn-secondary" onClick={handleShareInvoice}>
+              🔗 Share Invoice
+            </button>
+          )}
           {invoice.status !== 'paid' && (
             <button className="btn btn-primary" onClick={() => setShowPaymentModal(true)}>
-              Record Payment
+              Pay Now
             </button>
           )}
         </div>

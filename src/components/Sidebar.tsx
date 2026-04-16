@@ -10,8 +10,10 @@ const navItems = [
   { href: '/invoices', label: 'Invoices', icon: '📄' },
   { href: '/clients', label: 'Clients', icon: '👥' },
   { href: '/payments', label: 'Payments', icon: '💳' },
+  { href: '/revenue', label: 'Revenue', icon: '💰' },
   { href: '/recurring', label: 'Recurring', icon: '🔄' },
   { href: '/reports', label: 'Reports', icon: '📈' },
+  { href: '/pricing', label: 'Pricing', icon: '⭐' },
 ]
 
 export default function Sidebar() {
