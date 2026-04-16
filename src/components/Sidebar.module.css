@@ -569,8 +569,8 @@
     width: 85%;
     max-width: 320px;
     box-shadow: 8px 0 50px rgba(0, 0, 0, 0.6);
-    top: 0;
-    height: 100%;
+    top: 70px;
+    height: calc(100% - 70px);
   }
   
   .sidebar.open {
@@ -589,9 +589,12 @@
   .sidebar.open .navItem:nth-child(6) { animation-delay: 0.3s; }
   .sidebar.open .navItem:nth-child(7) { animation-delay: 0.35s; }
   .sidebar.open .navItem:nth-child(8) { animation-delay: 0.4s; }
+  .sidebar.open .navItem:nth-child(9) { animation-delay: 0.45s; }
   
   .overlay {
     display: block;
+    top: 70px;
+    height: calc(100% - 70px);
   }
 }
 
