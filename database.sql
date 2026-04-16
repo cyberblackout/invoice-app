@@ -1,7 +1,10 @@
--- InvoiceFlow Ghana - GRA E-VAT Compliant Schema
--- Run this in Supabase SQL Editor
+-- InvoiceFlow Ghana - Complete Database Schema
+-- GRA E-VAT Compliant Invoice Management System
+-- Run this SQL in your Supabase SQL Editor
 
--- Clients table with TIN/VAT support
+-- ============================================
+-- CLIENTS TABLE
+-- ============================================
 CREATE TABLE IF NOT EXISTS clients (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
@@ -16,7 +19,9 @@ CREATE TABLE IF NOT EXISTS clients (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
--- Business settings table
+-- ============================================
+-- BUSINESS SETTINGS TABLE
+-- ============================================
 CREATE TABLE IF NOT EXISTS business_settings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   business_name TEXT NOT NULL,
@@ -30,12 +35,14 @@ CREATE TABLE IF NOT EXISTS business_settings (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
--- Invoices table with GRA compliance
+-- ============================================
+-- INVOICES TABLE
+-- ============================================
 CREATE TABLE IF NOT EXISTS invoices (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   invoice_number TEXT UNIQUE NOT NULL,
   client_id UUID REFERENCES clients(id),
-  status TEXT DEFAULT 'draft',
+  status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'sent', 'paid', 'overdue', 'cancelled')),
   issue_date DATE NOT NULL,
   due_date DATE NOT NULL,
   subtotal DECIMAL(12,2) DEFAULT 0,
@@ -54,7 +61,9 @@ CREATE TABLE IF NOT EXISTS invoices (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
--- Line items table
+-- ============================================
+-- LINE ITEMS TABLE
+-- ============================================
 CREATE TABLE IF NOT EXISTS line_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   invoice_id UUID REFERENCES invoices(id) ON DELETE CASCADE,
@@ -64,7 +73,9 @@ CREATE TABLE IF NOT EXISTS line_items (
   amount DECIMAL(12,2) DEFAULT 0
 );
 
--- Payments table with Ghana payment gateway support
+-- ============================================
+-- PAYMENTS TABLE
+-- ============================================
 CREATE TABLE IF NOT EXISTS payments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   invoice_id UUID REFERENCES invoices(id),
@@ -80,7 +91,9 @@ CREATE TABLE IF NOT EXISTS payments (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Recurring invoices table
+-- ============================================
+-- RECURRING INVOICES TABLE
+-- ============================================
 CREATE TABLE IF NOT EXISTS recurring_invoices (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   client_id UUID REFERENCES clients(id),
@@ -91,15 +104,23 @@ CREATE TABLE IF NOT EXISTS recurring_invoices (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Create indexes for better query performance
+-- ============================================
+-- INDEXES
+-- ============================================
 CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status);
 CREATE INDEX IF NOT EXISTS idx_invoices_client ON invoices(client_id);
 CREATE INDEX IF NOT EXISTS idx_invoices_issue_date ON invoices(issue_date);
+CREATE INDEX IF NOT EXISTS idx_invoices_gra_status ON invoices(gra_status);
+CREATE INDEX IF NOT EXISTS idx_invoices_validation_id ON invoices(validation_id);
 CREATE INDEX IF NOT EXISTS idx_payments_invoice ON payments(invoice_id);
 CREATE INDEX IF NOT EXISTS idx_payments_date ON payments(payment_date);
+CREATE INDEX IF NOT EXISTS idx_payments_method ON payments(payment_method);
+CREATE INDEX IF NOT EXISTS idx_payments_transaction ON payments(transaction_id);
 CREATE INDEX IF NOT EXISTS idx_clients_tin ON clients(tin);
 
--- Enable Row Level Security (for production)
+-- ============================================
+-- ROW LEVEL SECURITY
+-- ============================================
 ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
 ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
 ALTER TABLE line_items ENABLE ROW LEVEL SECURITY;
@@ -107,10 +128,19 @@ ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE recurring_invoices ENABLE ROW LEVEL SECURITY;
 ALTER TABLE business_settings ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies (allow all for development - update for production)
-CREATE POLICY "Allow all access to clients" ON clients FOR ALL USING (true);
-CREATE POLICY "Allow all access to invoices" ON invoices FOR ALL USING (true);
-CREATE POLICY "Allow all access to line_items" ON line_items FOR ALL USING (true);
-CREATE POLICY "Allow all access to payments" ON payments FOR ALL USING (true);
-CREATE POLICY "Allow all access to recurring_invoices" ON recurring_invoices FOR ALL USING (true);
-CREATE POLICY "Allow all access to business_settings" ON business_settings FOR ALL USING (true);
+-- RLS Policies (allow all for development - restrict for production)
+CREATE POLICY "Allow all access to clients" ON clients FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all access to invoices" ON invoices FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all access to line_items" ON line_items FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all access to payments" ON payments FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all access to recurring_invoices" ON recurring_invoices FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all access to business_settings" ON business_settings FOR ALL USING (true) WITH CHECK (true);
+
+-- ============================================
+-- DEFAULT BUSINESS SETTINGS
+-- ============================================
+INSERT INTO business_settings (business_name, tin)
+VALUES ('My Business', 'TIN-REQUIRED')
+ON CONFLICT DO NOTHING;
+
+SELECT 'Database setup complete!' as status;
