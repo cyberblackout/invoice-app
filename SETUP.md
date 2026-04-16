@@ -1,95 +1,93 @@
-# Database Setup for InvoiceFlow
+# InvoiceFlow Ghana - Setup Guide
 
-## Step 1: Open Supabase Dashboard
-Go to: https://supabase.com/dashboard/project/vvclxdozdrubevngzoch
+## Prerequisites
+- Supabase account
+- Vercel account (for deployment)
+- Paystack account (for payment processing)
+- Hubtel account (for mobile money)
 
-## Step 2: Open SQL Editor
-In the left sidebar, click on **SQL Editor**
+## Step 1: Supabase Setup
 
-## Step 3: Run the Setup SQL
-Copy and paste the following SQL into the SQL Editor and click **Run**:
+### Option A: Fresh Database
+1. Go to: https://supabase.com/dashboard/project/vvclxdozdrubevngzoch
+2. Open **SQL Editor**
+3. Run `SETUP_TABLES.sql`
+
+### Option B: Existing Database (Migration)
+If you already have the old schema:
+1. Go to: https://supabase.com/dashboard/project/vvclxdozdrubevngzoch
+2. Open **SQL Editor**
+3. Run `MIGRATION_GRA.sql`
+
+## Step 2: Configure Business Settings
+
+After setup, update your business information in `business_settings` table:
 
 ```sql
--- Clients table
-CREATE TABLE IF NOT EXISTS clients (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  phone TEXT,
-  address TEXT,
-  company TEXT,
-  notes TEXT,
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
-);
-
--- Invoices table
-CREATE TABLE IF NOT EXISTS invoices (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  invoice_number TEXT UNIQUE NOT NULL,
-  client_id UUID REFERENCES clients(id),
-  status TEXT DEFAULT 'draft',
-  issue_date DATE NOT NULL,
-  due_date DATE NOT NULL,
-  subtotal DECIMAL,
-  tax_rate DECIMAL DEFAULT 0,
-  tax_amount DECIMAL DEFAULT 0,
-  total DECIMAL,
-  notes TEXT,
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
-);
-
--- Line items table
-CREATE TABLE IF NOT EXISTS line_items (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  invoice_id UUID REFERENCES invoices(id) ON DELETE CASCADE,
-  description TEXT NOT NULL,
-  quantity DECIMAL,
-  unit_price DECIMAL,
-  amount DECIMAL
-);
-
--- Payments table
-CREATE TABLE IF NOT EXISTS payments (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  invoice_id UUID REFERENCES invoices(id),
-  amount DECIMAL,
-  payment_date DATE,
-  payment_method TEXT,
-  reference TEXT,
-  notes TEXT
-);
-
--- Recurring invoices table
-CREATE TABLE IF NOT EXISTS recurring_invoices (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  client_id UUID REFERENCES clients(id),
-  frequency TEXT,
-  status TEXT DEFAULT 'active',
-  next_date DATE,
-  line_items JSONB,
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
--- Enable Row Level Security
-ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
-ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
-ALTER TABLE line_items ENABLE ROW LEVEL SECURITY;
-ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
-ALTER TABLE recurring_invoices ENABLE ROW LEVEL SECURITY;
-
--- Allow public access (for development)
-CREATE POLICY "Allow all" ON clients FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Allow all" ON invoices FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Allow all" ON line_items FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Allow all" ON payments FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Allow all" ON recurring_invoices FOR ALL USING (true) WITH CHECK (true);
+UPDATE business_settings SET 
+  business_name = 'Your Business Name',
+  business_address = '123 Main Street, Accra',
+  business_phone = '+233 XX XXX XXXX',
+  business_email = 'info@yourbusiness.com',
+  tin = 'Your TIN Number',
+  vat_number = 'Your VAT Number',
+  gra_branch = 'Accra Central';
 ```
 
-## Step 4: Verify
-After running, you should see "Success" messages. You can then use the app at http://localhost:3000
+## Step 3: Environment Variables
 
----
+### In Vercel Dashboard
+Add these environment variables in your Vercel project settings:
 
-**Note:** The SQL file is also saved at `C:\Users\CB_B\Desktop\invoice-app\setup.sql`
+| Variable | Description |
+|----------|-------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anon key |
+| `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY` | Paystack public key |
+| `PAYSTACK_SECRET_KEY` | Paystack secret key |
+| `HUBTEL_MERCHANT_ACCOUNT_NUMBER` | Hubtel account number |
+| `HUBTEL_MERCHANT_API_KEY` | Hubtel API key |
+| `NEXT_PUBLIC_APP_URL` | Your app URL (e.g., https://invoice-app.vercel.app) |
+
+## Step 4: GRA Tax Rates
+
+The system supports Ghana tax rates:
+
+| Tax Type | Rate | Description |
+|----------|------|-------------|
+| VAT | 12.5% | Standard VAT rate |
+| Standard | 15% | General rate |
+| Exempt | 0% | Tax-exempt items |
+
+## Step 5: Payment Gateways
+
+### Paystack Setup
+1. Sign up at https://paystack.com
+2. Get your API keys from Dashboard > Settings > API
+3. Enable GHS currency in your Paystack dashboard
+
+### Hubtel Setup
+1. Sign up at https://hubtel.com
+2. Register as a merchant
+3. Get your merchant account number and API key
+
+## Database Tables
+
+| Table | Purpose |
+|-------|---------|
+| `clients` | Customer information with TIN/VAT support |
+| `invoices` | Invoice data with GRA compliance |
+| `line_items` | Invoice line items |
+| `payments` | Payment records with gateway support |
+| `recurring_invoices` | Recurring invoice templates |
+| `business_settings` | Your business information |
+
+## Verification
+
+After setup, run this to verify:
+
+```sql
+SELECT * FROM business_settings;
+SELECT COUNT(*) FROM invoices;
+SELECT COUNT(*) FROM clients;
+```
