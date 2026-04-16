@@ -1,13 +1,26 @@
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
-import { Invoice } from '@/types'
+'use client'
 
-export default async function InvoicesPage() {
-  const { data: invoices } = await supabase
-    .from('invoices')
-    .select('*, client:clients(name)')
-    .order('created_at', { ascending: false })
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { supabase } from '@/lib/supabase'
+
+export default function InvoicesPage() {
+  const [invoices, setInvoices] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    loadInvoices()
+  }, [])
+
+  async function loadInvoices() {
+    const { data } = await supabase
+      .from('invoices')
+      .select('*, client:clients(name)')
+      .order('created_at', { ascending: false })
+    
+    setInvoices(data || [])
+    setLoading(false)
+  }
 
   const formatCurrency = (amount: number) => 
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
@@ -24,6 +37,10 @@ export default async function InvoicesPage() {
       cancelled: 'badge-cancelled'
     }
     return classes[status] || 'badge-draft'
+  }
+
+  if (loading) {
+    return <div className="loading"><div className="spinner"></div></div>
   }
 
   return (
@@ -57,7 +74,7 @@ export default async function InvoicesPage() {
               </tr>
             </thead>
             <tbody>
-              {invoices.map((invoice: any) => (
+              {invoices.map((invoice) => (
                 <tr key={invoice.id}>
                   <td>
                     <Link href={`/invoices/${invoice.id}`} style={{ color: 'var(--accent)', fontWeight: '500' }}>
