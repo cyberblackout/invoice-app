@@ -281,11 +281,35 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
+  position: relative;
 }
 
 .headerBtn:hover {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
+}
+
+.headerBtn:hover svg {
+  animation: bellRing 0.4s ease-in-out;
+}
+
+.headerBtn svg {
+  animation: bellSwing 2s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+@keyframes bellSwing {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(10deg); }
+  75% { transform: rotate(-10deg); }
+}
+
+@keyframes bellRing {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(15deg); }
+  50% { transform: rotate(-15deg); }
+  75% { transform: rotate(10deg); }
+  100% { transform: rotate(0deg); }
 }
 
 .avatar {
@@ -300,6 +324,13 @@
   font-size: 16px;
   color: #fff;
   box-shadow: 0 4px 12px rgba(233, 69, 96, 0.3);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.avatar:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 6px 20px rgba(233, 69, 96, 0.5);
 }
 
 .overlay {
