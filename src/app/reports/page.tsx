@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Invoice, Client } from '@/types'
+import { formatGHS } from '@/lib/ghana'
 
 export default function ReportsPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([])
@@ -112,8 +113,7 @@ export default function ReportsPage() {
 
   const maxRevenue = Math.max(...Object.values(revenueByMonth), 1)
 
-  const formatCurrency = (amount: number) => 
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
+  const formatCurrency = (amount: number) => formatGHS(amount)
 
   const exportToCSV = () => {
     const headers = ['Invoice Number', 'Client', 'Issue Date', 'Due Date', 'Amount', 'Status']

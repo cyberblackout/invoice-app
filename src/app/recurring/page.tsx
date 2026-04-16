@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { RecurringInvoice, Client, LineItem } from '@/types'
+import { formatGHS } from '@/lib/ghana'
 
 export default function RecurringPage() {
   const [recurringInvoices, setRecurringInvoices] = useState<RecurringInvoice[]>([])
@@ -158,11 +159,10 @@ export default function RecurringPage() {
     return date.toISOString().split('T')[0]
   }
 
-  const formatCurrency = (amount: number) => 
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
+  const formatCurrency = (amount: number) => formatGHS(amount)
 
   const formatDate = (date: string) => 
-    new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    new Date(date).toLocaleDateString('en-GH', { month: 'short', day: 'numeric', year: 'numeric' })
 
   if (loading) {
     return <div className="loading"><div className="spinner"></div></div>
