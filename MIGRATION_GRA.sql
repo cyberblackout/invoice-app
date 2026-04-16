@@ -1,6 +1,5 @@
 -- InvoiceFlow Ghana - Migration Script
--- Run this in Supabase SQL Editor if you already have the old schema
--- This adds GRA E-VAT compliance fields to existing tables
+-- Run this to add new GRA E-VAT columns without losing data
 
 -- Add columns to clients table
 ALTER TABLE clients ADD COLUMN IF NOT EXISTS tin TEXT;
@@ -15,13 +14,12 @@ ALTER TABLE invoices ADD COLUMN IF NOT EXISTS gra_status TEXT DEFAULT 'pending';
 ALTER TABLE invoices ADD COLUMN IF NOT EXISTS tax_type TEXT DEFAULT 'standard';
 
 -- Add columns to payments table
-ALTER TABLE payments ADD COLUMN IF NOT EXISTS payment_method TEXT;
 ALTER TABLE payments ADD COLUMN IF NOT EXISTS mobile_money_provider TEXT;
 ALTER TABLE payments ADD COLUMN IF NOT EXISTS mobile_money_number TEXT;
 ALTER TABLE payments ADD COLUMN IF NOT EXISTS transaction_id TEXT;
 ALTER TABLE payments ADD COLUMN IF NOT EXISTS gateway_response JSONB;
 
--- Create business_settings table
+-- Create business_settings table if not exists
 CREATE TABLE IF NOT EXISTS business_settings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   business_name TEXT NOT NULL,
@@ -41,7 +39,15 @@ CREATE INDEX IF NOT EXISTS idx_invoices_validation_id ON invoices(validation_id)
 CREATE INDEX IF NOT EXISTS idx_payments_method ON payments(payment_method);
 CREATE INDEX IF NOT EXISTS idx_payments_transaction ON payments(transaction_id);
 
--- Insert default business settings (update with your info)
-INSERT INTO business_settings (business_name, business_address, business_phone, business_email, tin)
-VALUES ('Your Business Name', 'Your Business Address', '+233 XX XXX XXXX', 'info@yourbusiness.com', 'TIN-XXXXX')
+-- Enable RLS on business_settings
+ALTER TABLE business_settings ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow all" ON business_settings FOR ALL USING (true);
+
+-- Insert default business settings (optional)
+INSERT INTO business_settings (business_name, tin)
+VALUES ('My Business', 'TIN-REQUIRED')
 ON CONFLICT DO NOTHING;
+
+-- Verify migration
+SELECT 'Migration complete!' as status;
+SELECT column_name FROM information_schema.columns WHERE table_name = 'clients';
