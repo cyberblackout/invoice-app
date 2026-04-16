@@ -43,7 +43,7 @@ export default function Sidebar() {
               </defs>
             </svg>
           </div>
-          <span className={styles.mobileBrand}>InvoiceFlow</span>
+          <span className={styles.mobileBrand}>Cyber InvoiceFlow</span>
         </div>
         
         <div className={styles.headerRight}>
@@ -74,7 +74,7 @@ export default function Sidebar() {
               </svg>
             </div>
             <div className={styles.logoText}>
-              <span className={styles.brandName}>InvoiceFlow</span>
+              <span className={styles.brandName}>Cyber InvoiceFlow</span>
               <span className={styles.brandTagline}>Invoice Manager</span>
             </div>
           </div>
@@ -108,8 +108,8 @@ export default function Sidebar() {
           <div className={styles.footerCard}>
             <div className={styles.footerIcon}>🚀</div>
             <div className={styles.footerText}>
-              <strong>Pro Plan</strong>
-              <span>Upgrade for more features</span>
+              <strong>Cyber InvoiceFlow</strong>
+              <span>GRA E-VAT Compliant</span>
             </div>
           </div>
           <div className={styles.version}>v1.0.0</div>

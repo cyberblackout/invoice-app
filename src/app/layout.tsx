@@ -3,8 +3,8 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 
 export const metadata: Metadata = {
-  title: "InvoiceFlow - Invoice Management",
-  description: "Create and manage invoices with ease",
+  title: "Cyber InvoiceFlow - Ghana Invoice Management",
+  description: "GRA E-VAT compliant invoice management for Ghana",
 };
 
 export default function RootLayout({
