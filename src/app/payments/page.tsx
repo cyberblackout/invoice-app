@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Payment } from '@/types'
+import { formatGHS, formatDate } from '@/lib/ghana'
 
 export default function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([])
@@ -19,7 +20,7 @@ export default function PaymentsPage() {
       .from('payments')
       .select('*, invoice:invoices(invoice_number, client:clients(name))')
       .order('payment_date', { ascending: false })
-    
+
     setPayments(data || [])
     setLoading(false)
   }
@@ -31,12 +32,6 @@ export default function PaymentsPage() {
     if (dateTo && p.payment_date > dateTo) return false
     return true
   })
-
-  const formatCurrency = (amount: number) => 
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
-
-  const formatDate = (date: string) => 
-    new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
   if (loading) {
     return <div className="loading"><div className="spinner"></div></div>
@@ -50,7 +45,7 @@ export default function PaymentsPage() {
 
       <div className="grid grid-4" style={{ marginBottom: '32px' }}>
         <div className="stat-card">
-          <div className="stat-value" style={{ color: 'var(--success)' }}>{formatCurrency(totalAmount)}</div>
+          <div className="stat-value" style={{ color: 'var(--success)' }}>{formatGHS(totalAmount)}</div>
           <div className="stat-label">Total Received</div>
         </div>
         <div className="stat-card">
@@ -112,7 +107,7 @@ export default function PaymentsPage() {
                   <td>{payment.payment_method || '-'}</td>
                   <td>{payment.reference || '-'}</td>
                   <td style={{ textAlign: 'right', fontFamily: 'JetBrains Mono', color: 'var(--success)' }}>
-                    {formatCurrency(payment.amount)}
+                    {formatGHS(payment.amount)}
                   </td>
                 </tr>
               ))}

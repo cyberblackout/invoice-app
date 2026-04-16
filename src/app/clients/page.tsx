@@ -18,6 +18,8 @@ export default function ClientsPage() {
     phone: '',
     address: '',
     company: '',
+    tin: '',
+    vat_number: '',
     notes: ''
   })
 
@@ -33,7 +35,7 @@ export default function ClientsPage() {
 
   function openCreateModal() {
     setEditingClient(null)
-    setFormData({ name: '', email: '', phone: '', address: '', company: '', notes: '' })
+    setFormData({ name: '', email: '', phone: '', address: '', company: '', tin: '', vat_number: '', notes: '' })
     setShowModal(true)
   }
 
@@ -45,6 +47,8 @@ export default function ClientsPage() {
       phone: client.phone || '',
       address: client.address || '',
       company: client.company || '',
+      tin: client.tin || '',
+      vat_number: client.vat_number || '',
       notes: client.notes || ''
     })
     setShowModal(true)
@@ -121,6 +125,7 @@ export default function ClientsPage() {
                 <th>Company</th>
                 <th>Email</th>
                 <th>Phone</th>
+                <th>TIN</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -131,6 +136,7 @@ export default function ClientsPage() {
                   <td>{client.company || '-'}</td>
                   <td>{client.email}</td>
                   <td>{client.phone || '-'}</td>
+                  <td>{client.tin || '-'}</td>
                   <td>
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <button className="btn btn-ghost btn-sm" onClick={() => openEditModal(client)}>Edit</button>
@@ -193,7 +199,7 @@ export default function ClientsPage() {
                 </div>
                 <div className="form-group">
                   <label className="label">Address</label>
-                  <textarea 
+                  <textarea
                     className="input"
                     rows={2}
                     value={formData.address}
@@ -201,8 +207,28 @@ export default function ClientsPage() {
                   />
                 </div>
                 <div className="form-group">
+                  <label className="label">Tax ID (TIN)</label>
+                  <input
+                    type="text"
+                    className="input"
+                    value={formData.tin}
+                    onChange={(e) => setFormData({ ...formData, tin: e.target.value })}
+                    placeholder="e.g., P001234567"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="label">VAT Number</label>
+                  <input
+                    type="text"
+                    className="input"
+                    value={formData.vat_number}
+                    onChange={(e) => setFormData({ ...formData, vat_number: e.target.value })}
+                    placeholder="e.g., 001234567"
+                  />
+                </div>
+                <div className="form-group">
                   <label className="label">Notes</label>
-                  <textarea 
+                  <textarea
                     className="input"
                     rows={2}
                     value={formData.notes}

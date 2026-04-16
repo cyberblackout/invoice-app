@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
+import { formatGHS, formatDate } from '@/lib/ghana'
 
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<any[]>([])
@@ -17,16 +18,10 @@ export default function InvoicesPage() {
       .from('invoices')
       .select('*, client:clients(name)')
       .order('created_at', { ascending: false })
-    
+
     setInvoices(data || [])
     setLoading(false)
   }
-
-  const formatCurrency = (amount: number) => 
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
-
-  const formatDate = (date: string) => 
-    new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
   const getStatusBadge = (status: string) => {
     const classes: Record<string, string> = {
@@ -84,7 +79,7 @@ export default function InvoicesPage() {
                   <td>{invoice.client?.name || 'Unknown'}</td>
                   <td>{formatDate(invoice.issue_date)}</td>
                   <td>{formatDate(invoice.due_date)}</td>
-                  <td style={{ fontFamily: 'JetBrains Mono' }}>{formatCurrency(invoice.total)}</td>
+                  <td style={{ fontFamily: 'JetBrains Mono' }}>{formatGHS(invoice.total)}</td>
                   <td>
                     <span className={`badge ${getStatusBadge(invoice.status)}`}>
                       {invoice.status}

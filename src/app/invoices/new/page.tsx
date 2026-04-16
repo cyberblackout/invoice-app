@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Client, LineItem } from '@/types'
+import { formatGHS, GRA_TAX_RATES } from '@/lib/ghana'
 
 interface LineItemForm {
   description: string
@@ -22,7 +23,7 @@ export default function NewInvoicePage() {
     client_id: '',
     issue_date: new Date().toISOString().split('T')[0],
     due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    tax_rate: 0,
+    tax_rate: GRA_TAX_RATES.VAT,
     notes: ''
   })
   
@@ -141,8 +142,7 @@ export default function NewInvoicePage() {
     }
   }
 
-  const formatCurrency = (amount: number) => 
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
+  const formatCurrency = (amount: number) => formatGHS(amount)
 
   if (loading) {
     return <div className="loading"><div className="spinner"></div></div>
@@ -199,15 +199,16 @@ export default function NewInvoicePage() {
           </div>
 
           <div className="form-group">
-            <label className="label">Tax Rate (%)</label>
-            <input 
-              type="number" 
+            <label className="label">Tax Rate (Ghana VAT)</label>
+            <select
               className="input"
               value={formData.tax_rate}
               onChange={(e) => setFormData({ ...formData, tax_rate: parseFloat(e.target.value) || 0 })}
-              min="0"
-              step="0.1"
-            />
+            >
+              <option value={GRA_TAX_RATES.VAT}>VAT 12.5% (Standard)</option>
+              <option value={GRA_TAX_RATES.STANDARD}>Standard Rate 15%</option>
+              <option value={GRA_TAX_RATES.EXEMPT}>Exempt (0%)</option>
+            </select>
           </div>
 
           <div className="form-group">

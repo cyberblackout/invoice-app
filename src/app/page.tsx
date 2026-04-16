@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { Invoice, Client, Payment } from '@/types'
+import { formatGHS, formatDate } from '@/lib/ghana'
 
 export default function Dashboard() {
   const [invoices, setInvoices] = useState<Invoice[]>([])
@@ -21,7 +22,7 @@ export default function Dashboard() {
       supabase.from('clients').select('*').order('name'),
       supabase.from('payments').select('*, invoice:invoices(*)').order('payment_date', { ascending: false })
     ])
-    
+
     setInvoices(invoicesRes.data || [])
     setClients(clientsRes.data || [])
     setPayments(paymentsRes.data || [])
@@ -37,12 +38,6 @@ export default function Dashboard() {
     .reduce((sum, i) => sum + i.total, 0)
 
   const overdueCount = invoices.filter(i => i.status === 'overdue').length
-
-  const formatCurrency = (amount: number) => 
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
-
-  const formatDate = (date: string) => 
-    new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
   const getStatusBadge = (status: string) => {
     const classes: Record<string, string> = {
@@ -65,7 +60,7 @@ export default function Dashboard() {
         <div className="header-content">
           <div className="header-text">
             <h1 className="page-title">Welcome Back! 👋</h1>
-            <p className="header-subtitle">Here's what's happening with your business today.</p>
+            <p className="header-subtitle">Here&apos;s what&apos;s happening with your business today.</p>
           </div>
           <div className="header-actions">
             <Link href="/clients" className="action-btn action-btn-secondary">
@@ -91,20 +86,20 @@ export default function Dashboard() {
           <div className="stat-icon">💰</div>
           <div className="stat-content">
             <span className="stat-label">Total Revenue</span>
-            <span className="stat-value">{formatCurrency(totalRevenue)}</span>
+            <span className="stat-value">{formatGHS(totalRevenue)}</span>
             <span className="stat-trend stat-trend-up">↑ 12.5% from last month</span>
           </div>
         </div>
-        
+
         <div className="stat-card stat-pending">
           <div className="stat-icon">⏳</div>
           <div className="stat-content">
             <span className="stat-label">Pending Payments</span>
-            <span className="stat-value">{formatCurrency(pendingAmount)}</span>
+            <span className="stat-value">{formatGHS(pendingAmount)}</span>
             <span className="stat-trend">Awaiting collection</span>
           </div>
         </div>
-        
+
         <div className="stat-card stat-overdue">
           <div className="stat-icon">⚠️</div>
           <div className="stat-content">
@@ -113,7 +108,7 @@ export default function Dashboard() {
             <span className="stat-trend stat-trend-down">Needs attention</span>
           </div>
         </div>
-        
+
         <div className="stat-card stat-clients">
           <div className="stat-icon">🤝</div>
           <div className="stat-content">
@@ -135,7 +130,7 @@ export default function Dashboard() {
               View All →
             </Link>
           </div>
-          
+
           {invoices.length === 0 ? (
             <div className="empty-card">
               <div className="empty-icon">📋</div>
@@ -166,7 +161,7 @@ export default function Dashboard() {
                       </td>
                       <td className="client-name">{invoice.client?.name || 'Unknown'}</td>
                       <td className="date">{formatDate(invoice.issue_date)}</td>
-                      <td className="amount">{formatCurrency(invoice.total)}</td>
+                      <td className="amount">{formatGHS(invoice.total)}</td>
                       <td>
                         <span className={`badge ${getStatusBadge(invoice.status)}`}>
                           {invoice.status}
@@ -195,7 +190,7 @@ export default function Dashboard() {
               View All →
             </Link>
           </div>
-          
+
           {payments.length === 0 ? (
             <div className="empty-card">
               <div className="empty-icon">💵</div>
@@ -211,7 +206,7 @@ export default function Dashboard() {
                     <span className="payment-invoice">{payment.invoice?.invoice_number || 'N/A'}</span>
                     <span className="payment-date">{formatDate(payment.payment_date)}</span>
                   </div>
-                  <div className="payment-amount">{formatCurrency(payment.amount)}</div>
+                  <div className="payment-amount">{formatGHS(payment.amount)}</div>
                 </div>
               ))}
             </div>
