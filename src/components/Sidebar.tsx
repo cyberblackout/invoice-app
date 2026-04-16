@@ -20,15 +20,44 @@ export default function Sidebar() {
 
   return (
     <>
-      <button 
-        className={styles.menuBtn}
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label="Toggle menu"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M3 12h18M3 6h18M3 18h18"/>
-        </svg>
-      </button>
+      <header className={styles.mobileHeader}>
+        <button 
+          className={styles.menuBtn}
+          onClick={() => setIsOpen(true)}
+          aria-label="Open menu"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M3 12h18M3 6h18M3 18h18"/>
+          </svg>
+        </button>
+        
+        <div className={styles.mobileLogo}>
+          <div className={styles.mobileLogoIcon}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="url(#gradientMobile)"/>
+              <defs>
+                <linearGradient id="gradientMobile" x1="3" y1="2" x2="13" y2="14">
+                  <stop stopColor="#e94560"/>
+                  <stop offset="1" stopColor="#ff7b93"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <span className={styles.mobileBrand}>InvoiceFlow</span>
+        </div>
+        
+        <div className={styles.headerRight}>
+          <button className={styles.headerBtn}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+          </button>
+          <div className={styles.avatar}>
+            <span>U</span>
+          </div>
+        </div>
+      </header>
       
       <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
         <div className={styles.header}>
