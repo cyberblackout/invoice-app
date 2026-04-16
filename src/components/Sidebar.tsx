@@ -14,6 +14,7 @@ const navItems = [
   { href: '/recurring', label: 'Recurring', icon: '🔄' },
   { href: '/reports', label: 'Reports', icon: '📈' },
   { href: '/pricing', label: 'Pricing', icon: '⭐' },
+  { href: '/settings', label: 'Settings', icon: '⚙️' },
 ]
 
 export default function Sidebar() {
