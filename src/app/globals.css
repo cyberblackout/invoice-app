@@ -229,7 +229,7 @@ td {
 }
 
 .stat-value {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   font-family: 'JetBrains Mono', monospace;
 }
@@ -238,6 +238,16 @@ td {
   font-size: 14px;
   color: var(--text-muted);
   margin-top: 4px;
+}
+
+@media (max-width: 480px) {
+  .stat-card {
+    padding: 16px;
+  }
+  
+  .stat-value {
+    font-size: 24px;
+  }
 }
 
 .grid {
@@ -272,6 +282,21 @@ td {
     flex-direction: column;
     gap: 16px;
     align-items: flex-start;
+  }
+}
+
+.main-content {
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+  padding: 32px;
+  width: calc(100% - var(--sidebar-width));
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 72px 16px 24px;
   }
 }
 

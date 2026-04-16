@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import styles from './Sidebar.module.css'
@@ -15,25 +16,45 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <aside className={styles.sidebar}>
-      <div className={styles.logo}>
-        <span className={styles.logoIcon}>⚡</span>
-        <span className={styles.logoText}>InvoiceFlow</span>
-      </div>
-      <nav className={styles.nav}>
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`${styles.navItem} ${pathname === item.href ? styles.active : ''}`}
+    <>
+      <button 
+        className={styles.menuBtn}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Toggle menu"
+      >
+        ☰
+      </button>
+      
+      <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
+        <div className={styles.logo}>
+          <span className={styles.logoIcon}>⚡</span>
+          <span className={styles.logoText}>InvoiceFlow</span>
+          <button 
+            className={styles.closeBtn}
+            onClick={() => setIsOpen(false)}
           >
-            <span className={styles.navIcon}>{item.icon}</span>
-            <span className={styles.navLabel}>{item.label}</span>
-          </Link>
-        ))}
-      </nav>
-    </aside>
+            ×
+          </button>
+        </div>
+        <nav className={styles.nav}>
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`${styles.navItem} ${pathname === item.href ? styles.active : ''}`}
+              onClick={() => setIsOpen(false)}
+            >
+              <span className={styles.navIcon}>{item.icon}</span>
+              <span className={styles.navLabel}>{item.label}</span>
+            </Link>
+          ))}
+        </nav>
+      </aside>
+      
+      {isOpen && <div className={styles.overlay} onClick={() => setIsOpen(false)} />}
+    </>
   )
 }

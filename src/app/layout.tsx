@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Sidebar />
-        <div style={{ marginLeft: 'var(--sidebar-width)', minHeight: '100vh', padding: '32px' }}>
+        <div className="main-content">
           {children}
         </div>
       </body>
