@@ -25,21 +25,42 @@ export default function Sidebar() {
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle menu"
       >
-        ☰
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M3 12h18M3 6h18M3 18h18"/>
+        </svg>
       </button>
       
       <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
-        <div className={styles.logo}>
-          <span className={styles.logoIcon}>⚡</span>
-          <span className={styles.logoText}>InvoiceFlow</span>
+        <div className={styles.header}>
+          <div className={styles.logoSection}>
+            <div className={styles.logoIcon}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="url(#gradient)"/>
+                <defs>
+                  <linearGradient id="gradient" x1="3" y1="2" x2="13" y2="14" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#e94560"/>
+                    <stop offset="1" stopColor="#ff7b93"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div className={styles.logoText}>
+              <span className={styles.brandName}>InvoiceFlow</span>
+              <span className={styles.brandTagline}>Invoice Manager</span>
+            </div>
+          </div>
           <button 
             className={styles.closeBtn}
             onClick={() => setIsOpen(false)}
           >
-            ×
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
           </button>
         </div>
+        
         <nav className={styles.nav}>
+          <div className={styles.navLabel}>MENU</div>
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -48,10 +69,22 @@ export default function Sidebar() {
               onClick={() => setIsOpen(false)}
             >
               <span className={styles.navIcon}>{item.icon}</span>
-              <span className={styles.navLabel}>{item.label}</span>
+              <span className={styles.navLabelText}>{item.label}</span>
+              {pathname === item.href && <span className={styles.activeDot} />}
             </Link>
           ))}
         </nav>
+        
+        <div className={styles.footer}>
+          <div className={styles.footerCard}>
+            <div className={styles.footerIcon}>🚀</div>
+            <div className={styles.footerText}>
+              <strong>Pro Plan</strong>
+              <span>Upgrade for more features</span>
+            </div>
+          </div>
+          <div className={styles.version}>v1.0.0</div>
+        </div>
       </aside>
       
       {isOpen && <div className={styles.overlay} onClick={() => setIsOpen(false)} />}

@@ -4,46 +4,66 @@
   top: 0;
   width: var(--sidebar-width);
   height: 100vh;
-  background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
-  border-right: 1px solid var(--border);
+  background: linear-gradient(180deg, #0d0d1a 0%, #13132a 100%);
+  border-right: 1px solid rgba(233, 69, 96, 0.15);
   display: flex;
   flex-direction: column;
   z-index: 100;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 4px 0 40px rgba(0, 0, 0, 0.4);
 }
 
-.logo {
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.logoSection {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 28px 24px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(0, 0, 0, 0.2);
 }
 
 .logoIcon {
-  font-size: 28px;
-  filter: drop-shadow(0 0 8px var(--accent-glow));
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, rgba(233, 69, 96, 0.2) 0%, rgba(233, 69, 96, 0.05) 100%);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(233, 69, 96, 0.3);
+  box-shadow: 0 0 20px rgba(233, 69, 96, 0.2);
 }
 
 .logoText {
+  display: flex;
+  flex-direction: column;
+}
+
+.brandName {
   font-family: 'Outfit', sans-serif;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.brandTagline {
+  font-size: 11px;
+  color: #8b8b9a;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .closeBtn {
-  display: none;
-  margin-left: auto;
   background: none;
   border: none;
-  color: var(--text-muted);
-  font-size: 28px;
+  color: #8b8b9a;
   cursor: pointer;
   width: 36px;
   height: 36px;
@@ -55,71 +75,132 @@
 }
 
 .closeBtn:hover {
-  background: var(--card);
-  color: var(--text);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
 .nav {
   flex: 1;
-  padding: 20px 16px;
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
   gap: 6px;
   overflow-y: auto;
 }
 
+.navLabel {
+  font-size: 10px;
+  font-weight: 700;
+  color: #5a5a6e;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 0 20px;
+  margin-bottom: 8px;
+}
+
 .navItem {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 16px 20px;
-  border-radius: 14px;
-  color: var(--text-muted);
+  padding: 14px 20px;
+  border-radius: 12px;
+  color: #8b8b9a;
   font-weight: 500;
-  font-size: 15px;
+  font-size: 14px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  overflow: hidden;
 }
 
-.navItem::before {
+.navItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.navItem.active {
+  background: linear-gradient(135deg, #e94560 0%, #d63d56 100%);
+  color: white;
+  box-shadow: 0 4px 20px rgba(233, 69, 96, 0.4);
+}
+
+.navItem.active::before {
   content: '';
   position: absolute;
   left: 0;
   top: 50%;
   transform: translateY(-50%);
   width: 4px;
-  height: 0;
-  background: var(--accent);
+  height: 24px;
+  background: #fff;
   border-radius: 0 4px 4px 0;
-  transition: height 0.2s;
-}
-
-.navItem:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text);
-  transform: translateX(4px);
-}
-
-.navItem.active {
-  background: linear-gradient(135deg, var(--accent) 0%, #d63d56 100%);
-  color: white;
-  box-shadow: 0 4px 16px var(--accent-glow);
-}
-
-.navItem.active::before {
-  height: 60%;
 }
 
 .navIcon {
-  font-size: 20px;
+  font-size: 18px;
   width: 24px;
   text-align: center;
 }
 
-.navLabel {
-  font-size: 15px;
+.navLabelText {
+  flex: 1;
   font-weight: 600;
+}
+
+.activeDot {
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.footer {
+  padding: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.footerCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(233, 69, 96, 0.1) 0%, rgba(0, 217, 165, 0.1) 100%);
+  border-radius: 14px;
+  border: 1px solid rgba(233, 69, 96, 0.2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.footerCard:hover {
+  border-color: rgba(233, 69, 96, 0.4);
+  transform: translateY(-2px);
+}
+
+.footerIcon {
+  font-size: 24px;
+}
+
+.footerText {
+  display: flex;
+  flex-direction: column;
+}
+
+.footerText strong {
+  font-size: 13px;
+  color: #fff;
+}
+
+.footerText span {
+  font-size: 11px;
+  color: #8b8b9a;
+}
+
+.version {
+  text-align: center;
+  font-size: 11px;
+  color: #5a5a6e;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .menuBtn {
@@ -128,22 +209,22 @@
   top: 20px;
   left: 20px;
   z-index: 200;
-  background: linear-gradient(135deg, var(--card) 0%, var(--primary) 100%);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-size: 22px;
+  background: linear-gradient(135deg, #1e1e32 0%, #13132a 100%);
+  border: 1px solid rgba(233, 69, 96, 0.3);
+  color: #fff;
+  font-size: 20px;
   width: 48px;
   height: 48px;
   border-radius: 14px;
   cursor: pointer;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   transition: all 0.2s;
 }
 
 .menuBtn:hover {
-  background: var(--accent);
+  background: #e94560;
   transform: scale(1.05);
 }
 
@@ -151,8 +232,8 @@
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
   z-index: 90;
   animation: fadeIn 0.2s ease-out;
 }
@@ -165,8 +246,8 @@
 @media (max-width: 768px) {
   .sidebar {
     transform: translateX(-100%);
-    width: 280px;
-    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.5);
+    width: 300px;
+    box-shadow: 8px 0 40px rgba(0, 0, 0, 0.6);
   }
   
   .sidebar.open {
@@ -174,10 +255,6 @@
   }
   
   .menuBtn {
-    display: flex;
-  }
-  
-  .closeBtn {
     display: flex;
   }
   
